@@ -1,0 +1,133 @@
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0 16px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.tab {
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: -1px;
+  user-select: none;
+}
+
+.tab:hover { color: var(--text); }
+
+.tab.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+.tabDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.tab.done .tabDot { background: var(--green); }
+.tab.error .tabDot { background: var(--red); }
+
+.content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.tabContent {
+  display: none;
+  padding: 24px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.contentActive {
+  display: block;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--muted);
+  text-align: center;
+  gap: 12px;
+  min-height: 300px;
+}
+
+.emptyState svg { opacity: 0.25; }
+.emptyState p { font-size: 14px; }
+
+.agentBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  margin-bottom: 14px;
+}
+
+.badge_detector { background: rgba(248,113,113,0.12); color: var(--red); }
+.badge_reviewer  { background: rgba(251,191,36,0.12);  color: var(--amber); }
+.badge_corrector { background: rgba(108,99,255,0.12);  color: var(--accent2); }
+.badge_tester    { background: rgba(52,211,153,0.12);  color: var(--green); }
+
+.resultSection {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.resultSection pre {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.copyBtn {
+  float: right;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.copyBtn:hover { color: var(--text); }

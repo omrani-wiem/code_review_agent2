@@ -4,6 +4,8 @@ from pydantic import BaseModel, Field
 import uvicorn
 import os
 import logging
+from dotenv import load_dotenv
+load_dotenv()
 
 from crew import run_review
 
@@ -19,10 +21,10 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],
     allow_credentials=True,
-    allow_methods=["Get", "POST", "PUT", "DELETE"],
-    allow_headers=["Authorization", "Content-Type"],  
+    allow_methods=["*"],
+    allow_headers=["*"],  
 )
 
 class ReviewRequest(BaseModel):
@@ -60,8 +62,8 @@ def health():
 
 @app.post("/review", response_model=ReviewResponse)
 def review_code(body: ReviewRequest):
-    if not os.getenv("open_ai_key"):
-        raise HTTPEXCEPTION(
+    if not os.getenv("GROQ_API_KEY"):
+        raise HTTPException(
             status_code=500,
         )
     

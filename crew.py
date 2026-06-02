@@ -1,28 +1,29 @@
-from crewai import Agent, Task, Crew, Process
-from langchain_openai import OpenAI
-import os 
-
-llm = ChatOpenAI(
-    model="gpt-4o",
+from crewai import Agent, Task, Crew, Process, LLM
+import os
+import litellm
+litellm.drop_params = True
+# ✅ Nouveau système LLM de CrewAI 1.x
+llm = LLM(
+    model="groq/llama-3.3-70b-versatile",
+    api_key=os.getenv("GROQ_API_KEY"),
     temperature=0.2,
-    openai_api_key=os.getenv("open_ai_key")
 )
 
+# ── Agents ──────────────────────────────────────────────────────────────────
 
 detector = Agent(
     role="Bug Detector",
     goal="Identify all bugs, errors, and potential issues in the provided code.",
     backstory=(
-        "You are a meticulous static-analysis expert."
-        "You sport syntax errors, logical flaws, off-by-one errors, "
-        "unhandled exceptions, and security vulnerabitilities instantly."
+        "You are a meticulous static-analysis expert. "
+        "You spot syntax errors, logical flaws, off-by-one errors, "
+        "unhandled exceptions, and security vulnerabilities instantly."
     ),
     llm=llm,
-    verbose=False,
+    verbose=True,
     allow_delegation=False,
-
+    cache=False,
 )
-
 
 reviewer = Agent(
     role="Code Reviewer",
@@ -32,12 +33,11 @@ reviewer = Agent(
         "You review for readability, naming conventions, SOLID principles, "
         "unnecessary complexity, and missing documentation."
     ),
-
     llm=llm,
-    verbose=False,
+    verbose=True,
     allow_delegation=False,
+    cache=False,
 )
-
 
 corrector = Agent(
     role="Code Corrector",
@@ -50,8 +50,9 @@ corrector = Agent(
     llm=llm,
     verbose=True,
     allow_delegation=False,
+    cache=False,
 )
- 
+
 tester = Agent(
     role="Test Engineer",
     goal="Write comprehensive unit tests for the corrected code.",
@@ -63,22 +64,20 @@ tester = Agent(
     llm=llm,
     verbose=True,
     allow_delegation=False,
+    cache=False,
 )
 
-
+# ── Task factory ─────────────────────────────────────────────────────────────
 
 def build_crew(code: str) -> Crew:
     detect_task = Task(
-
         description=(
             f"Analyze the following code and list every bug, error, "
             f"and potential issue you find. Be exhaustive.\n\n```\n{code}\n```"
         ),
-
         expected_output="A numbered list of all identified bugs and issues.",
         agent=detector,
     )
-
 
     review_task = Task(
         description=(
@@ -121,8 +120,10 @@ def build_crew(code: str) -> Crew:
         agents=[detector, reviewer, corrector, tester],
         tasks=[detect_task, review_task, correct_task, test_task],
         process=Process.sequential,
-        verbose=False,
+        verbose=True,
+        cache=False,  # ✅ désactive le cache Anthropic
     )
+
 
 def run_review(code: str) -> dict:
     crew = build_crew(code)
@@ -130,11 +131,9 @@ def run_review(code: str) -> dict:
 
     tasks = crew.tasks
     return {
-        "bugs":      tasks[0].output.raw if tasks[0].output else "",
-         "review":       tasks[1].output.raw if tasks[1].output else "",
+        "bugs":         tasks[0].output.raw if tasks[0].output else "",
+        "review":       tasks[1].output.raw if tasks[1].output else "",
         "corrected":    tasks[2].output.raw if tasks[2].output else "",
         "tests":        tasks[3].output.raw if tasks[3].output else "",
         "final_output": str(result),
     }
-
-

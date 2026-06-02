@@ -26,7 +26,7 @@ export default function CodePaneel({ onReview, loading }: Props) {
     const [language, setLanguage] = useState<Language>('python')
     const [apiUrl, setApiURl] = useState('http://localhost:8000')
 
-    const handleClick =  => {
+    const handleClick = ()  => {
         if (!code.trim()) {
             alert('Please paste some code fisrt.')
             return
@@ -83,6 +83,8 @@ export default function CodePaneel({ onReview, loading }: Props) {
         </button>
       </div>
     </div>
+        );
 
     }
-}
+  
+  

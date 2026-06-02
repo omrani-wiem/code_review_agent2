@@ -24,5 +24,6 @@ dist-ssr
 *.sw?
 venv/
 .env/
+code_review_agent/.env
 __pycache__/
 *.pyc

@@ -92,8 +92,11 @@ def build_crew(code: str) -> Crew:
 
     correct_task = Task(
         description=(
-            "Using the bug report and the review suggestions, rewrite the code "
-            "so that all issues are resolved. Include inline comments for every change."
+             "Using the bug report and the review suggestions, rewrite the code "
+             "so that all issues are resolved. Include inline comments for every change. "
+             "Important: Do not mention try/except in the summary unless you actually added them in the code. "
+             "Return numeric values from functions, not strings. "
+             "Do not duplicate validation checks."
         ),
         expected_output=(
             "The fully corrected code in a fenced code block, "

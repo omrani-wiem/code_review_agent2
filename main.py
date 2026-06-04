@@ -1,7 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from streamlit import markdown
 import uvicorn
+from cache import get_cached, set_cached
 import os
 import logging
 from dotenv import load_dotenv
@@ -60,22 +62,34 @@ def health():
 
 
 
+from cache import get_cached, set_cached  # ← ajoute cet import en haut
+
 @app.post("/review", response_model=ReviewResponse)
 def review_code(body: ReviewRequest):
     if not os.getenv("GROQ_API_KEY"):
-        raise HTTPException(
-            status_code=500,
-        )
-    
+        raise HTTPException(status_code=500)
+
     logger.info(f"Starting review for {len(body.code)} chars of {body.language} code")
 
+    
+    cached = get_cached(body.code)
+    if cached:
+        return ReviewResponse(
+            language=body.language,
+            bugs=cached["bugs"],
+            review=cached["review"],
+            corrected_code=cached["corrected"],
+            tests=cached["tests"],
+            final_summary=cached["final_output"],
+        )
 
     try:
         result = run_review(body.code)
     except Exception as exc:
-         logger.error(f"CrewAI pipeline failed: {exc}", exc_info=True)
-         raise HTTPException(status_code=500, detail=f"Review pipeline error: {str(exc)}")
-    
+        logger.error(f"CrewAI pipeline failed: {exc}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Review pipeline error: {str(exc)}")
+
+    set_cached(body.code, result)
 
     return ReviewResponse(
         language=body.language,
@@ -85,7 +99,6 @@ def review_code(body: ReviewRequest):
         tests=result["tests"],
         final_summary=result["final_output"],
     )
-
 
 if __name__ == "__main__":
 

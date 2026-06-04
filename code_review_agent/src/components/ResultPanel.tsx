@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import type { TabKey, TabState } from '../types'
 import styles from './ResultPanel.module.css'
+import ReactMarkdown from 'react-markdown'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
+
 
 interface Props {
   tabs: Record<TabKey, TabState>
@@ -10,7 +14,7 @@ const TAB_CONFIG: { key: TabKey; label: string; badge: string; badgeClass: strin
   {
     key: 'bugs',
     label: 'Bugs',
-    badge: '🔍 Bug Detector',
+    badge: ' Bug Detector',
     badgeClass: 'detector',
     icon: 'search',
     emptyMsg: 'Run a review to see detected bugs',
@@ -18,7 +22,7 @@ const TAB_CONFIG: { key: TabKey; label: string; badge: string; badgeClass: strin
   {
     key: 'review',
     label: 'Review',
-    badge: '📋 Code Reviewer',
+    badge: ' Code Reviewer',
     badgeClass: 'reviewer',
     icon: 'file',
     emptyMsg: 'Run a review to see quality feedback',
@@ -26,7 +30,7 @@ const TAB_CONFIG: { key: TabKey; label: string; badge: string; badgeClass: strin
   {
     key: 'corrected',
     label: 'Corrected',
-    badge: '⚡ Code Corrector',
+    badge: ' Code Corrector',
     badgeClass: 'corrector',
     icon: 'check',
     emptyMsg: 'Run a review to see corrected code',
@@ -34,7 +38,7 @@ const TAB_CONFIG: { key: TabKey; label: string; badge: string; badgeClass: strin
   {
     key: 'tests',
     label: 'Tests',
-    badge: '✅ Test Engineer',
+    badge: ' Test Engineer',
     badgeClass: 'tester',
     icon: 'checkbox',
     emptyMsg: 'Run a review to see generated tests',
@@ -126,7 +130,22 @@ export default function ResultPanel({ tabs }: Props) {
                   </div>
                   <div className={styles.resultSection}>
                     {hasCopy && <CopyButton text={content} />}
-                    <pre>{content}</pre>
+                    <ReactMarkdown
+  components={{
+    code({ node, inline, className, children, ...props }: any) {
+      const match = /language-(\w+)/.exec(className || '')
+      return !inline && match ? (
+        <SyntaxHighlighter style={vscDarkPlus} language={match[1]}>
+          {String(children).replace(/\n$/, '')}
+        </SyntaxHighlighter>
+      ) : (
+        <code className={className} {...props}>{children}</code>
+      )
+    }
+  }}
+>
+  {content}
+</ReactMarkdown>
                   </div>
                 </>
               )}

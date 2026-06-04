@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Language } from '../types'
+import ReactMarkdown from 'react-markdown'
 import styles from './codePanel.module.css';
 
 interface Props {

@@ -2,14 +2,14 @@ from crewai import Agent, Task, Crew, Process, LLM
 import os
 import litellm
 litellm.drop_params = True
-# ✅ Nouveau système LLM de CrewAI 1.x
+
 llm = LLM(
     model="groq/llama-3.3-70b-versatile",
     api_key=os.getenv("GROQ_API_KEY"),
     temperature=0.2,
 )
 
-# ── Agents ──────────────────────────────────────────────────────────────────
+
 
 detector = Agent(
     role="Bug Detector",
@@ -67,7 +67,7 @@ tester = Agent(
     cache=False,
 )
 
-# ── Task factory ─────────────────────────────────────────────────────────────
+
 
 def build_crew(code: str) -> Crew:
     detect_task = Task(
@@ -121,7 +121,7 @@ def build_crew(code: str) -> Crew:
         tasks=[detect_task, review_task, correct_task, test_task],
         process=Process.sequential,
         verbose=True,
-        cache=False,  # ✅ désactive le cache Anthropic
+        cache=False,
     )
 
 

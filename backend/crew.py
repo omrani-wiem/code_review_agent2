@@ -1,15 +1,46 @@
 from crewai import Agent, Task, Crew, Process, LLM
 import os
 import litellm
+from litellm import completion as original_completion
+
 litellm.drop_params = True
+os.environ["LITELLM_DROP_PARAMS"] = "True"
+
+
+def _clean_messages(messages):
+    cleaned = []
+    for msg in messages:
+        if isinstance(msg, dict):
+            msg = {k: v for k, v in msg.items() if k != "cache_breakpoint"}
+            if isinstance(msg.get("content"), list):
+                msg["content"] = [
+                    {k: v for k, v in block.items() if k != "cache_breakpoint"}
+                    if isinstance(block, dict) else block
+                    for block in msg["content"]
+                ]
+        cleaned.append(msg)
+    return cleaned
+
+_original_completion = litellm.completion
+
+def _patched_completion(*args, **kwargs):
+    if "messages" in kwargs:
+        kwargs["messages"] = _clean_messages(kwargs["messages"])
+    elif args:
+        args = list(args)
+        if len(args) > 1 and isinstance(args[1], list):
+            args[1] = _clean_messages(args[1])
+        args = tuple(args)
+    return _original_completion(*args, **kwargs)
+
+litellm.completion = _patched_completion
+
 
 llm = LLM(
     model="groq/llama-3.3-70b-versatile",
     api_key=os.getenv("GROQ_API_KEY"),
     temperature=0.2,
 )
-
-
 
 detector = Agent(
     role="Bug Detector",
@@ -68,7 +99,6 @@ tester = Agent(
 )
 
 
-
 def build_crew(code: str) -> Crew:
     detect_task = Task(
         description=(
@@ -92,11 +122,11 @@ def build_crew(code: str) -> Crew:
 
     correct_task = Task(
         description=(
-             "Using the bug report and the review suggestions, rewrite the code "
-             "so that all issues are resolved. Include inline comments for every change. "
-             "Important: Do not mention try/except in the summary unless you actually added them in the code. "
-             "Return numeric values from functions, not strings. "
-             "Do not duplicate validation checks."
+            "Using the bug report and the review suggestions, rewrite the code "
+            "so that all issues are resolved. Include inline comments for every change. "
+            "Important: Do not mention try/except in the summary unless you actually added them in the code. "
+            "Return numeric values from functions, not strings. "
+            "Do not duplicate validation checks."
         ),
         expected_output=(
             "The fully corrected code in a fenced code block, "

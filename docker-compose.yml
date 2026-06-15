@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+
+  # ── Redis — cache production ──────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data        # persistance des données
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── API FastAPI ───────────────────────────────────────────
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: runtime
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}          # depuis .env
+      - API_KEY=${API_KEY}                    # clé auth de l'API
+      - REDIS_URL=redis://redis:6379/0
+      - CACHE_TTL=86400                       # 24h
+      - CACHE_MAX_ENTRIES=500
+      - CORS_ORIGINS=http://localhost:5173,http://localhost:3000
+    depends_on:
+      redis:
+        condition: service_healthy            # attend que Redis soit prêt
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  redis_data:

@@ -23,7 +23,10 @@ export default function App() {
     try {
       const resp = await fetch(`${apiUrl.replace(/\/$/, '')}/review`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-API-Key': 'dev',
+         },
         body: JSON.stringify({ code, language }),
       })
 

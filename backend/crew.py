@@ -1,10 +1,11 @@
 from crewai import Agent, Task, Crew, Process, LLM
 import os
 import litellm
-from litellm import completion as original_completion
+
+
+
 
 litellm.drop_params = True
-os.environ["LITELLM_DROP_PARAMS"] = "True"
 
 
 def _clean_messages(messages):

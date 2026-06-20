@@ -2,8 +2,8 @@ import { useState } from 'react'
 import type { TabKey, TabState } from '../types'
 import styles from './ResultPanel.module.css'
 import ReactMarkdown from 'react-markdown'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'//pour le code coloré
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism' //pour le thème du code coloré (sombre)
 
 
 interface Props {
@@ -45,7 +45,7 @@ const TAB_CONFIG: { key: TabKey; label: string; badge: string; badgeClass: strin
   },
 ]
 
-function EmptyIcon({ type }: { type: string }) {
+function EmptyIcon({ type }: { type: string }) { // Icônes SVG pour l'état vide de chaque onglet
   if (type === 'search') return (
     <svg width={48} height={48} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
       <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -107,7 +107,7 @@ export default function ResultPanel({ tabs }: Props) {
               {label}
             </div>
           )
-        })}
+        })} 
       </div>
 
       <div className={styles.content}>

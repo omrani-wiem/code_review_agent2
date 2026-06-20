@@ -1,6 +1,6 @@
 export type Language = 'python' | 'javascript' | 'typescript' | 'java' | 'go' | 'rust' | 'cpp' | 'other'
 export type TabKey = 'bugs' | 'review' | 'corrected' | 'tests'
-export type TabStatus = 'idle' | 'done' | 'error'
+export type TabStatus = 'idle' | 'loading' | 'done' | 'error'
 
 export interface ReviewResponse {
   language: string

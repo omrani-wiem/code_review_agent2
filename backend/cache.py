@@ -58,7 +58,7 @@ class LocalCache:
         self._ttl = ttl
         self._max_entries = max_entries
         self._lock = threading.Lock()         
-        self._cache: dict = self._load()
+        self._cache: dict = self._load() 
 
     def _load(self) -> dict:
         if os.path.exists(CACHE_FILE):
@@ -75,6 +75,7 @@ class LocalCache:
         with open(tmp, "w") as f:
             json.dump(self._cache, f, indent=2)
         os.replace(tmp, CACHE_FILE)            
+
 
     def _is_expired(self, entry: dict) -> bool:
         """Vérifie si une entrée a dépassé son TTL."""

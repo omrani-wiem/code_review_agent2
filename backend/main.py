@@ -10,11 +10,11 @@ from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel, Field
 import uvicorn
 from dotenv import load_dotenv
-
-load_dotenv()
-
 from cache import get_cached, set_cached
 from crew import run_review
+
+
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

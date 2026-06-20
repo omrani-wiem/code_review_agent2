@@ -4,19 +4,19 @@ Pipeline d'analyse de code automatisé basé sur **4 agents IA** qui collaborent
 
 ---
 
-## ✨ Fonctionnalités
+##  Fonctionnalités
 
-- 🔍 **Bug Detector** — analyse statique, détecte bugs, erreurs logiques et failles de sécurité
-- 📋 **Code Reviewer** — évalue la qualité, le style et les bonnes pratiques (SOLID, lisibilité...)
-- 🛠️ **Code Corrector** — réécrit le code en corrigeant tous les problèmes détectés
-- 🧪 **Test Engineer** — génère une suite de tests `pytest` complète
-- ⚡ Pipeline **asynchrone** avec suivi en temps réel (polling)
-- 💾 Cache intelligent (Redis ou JSON local) pour éviter de retraiter un code déjà soumis
-- 🔐 Authentification par clé API
+-  **Bug Detector** — analyse statique, détecte bugs, erreurs logiques et failles de sécurité
+-  **Code Reviewer** — évalue la qualité, le style et les bonnes pratiques (SOLID, lisibilité...)
+-  **Code Corrector** — réécrit le code en corrigeant tous les problèmes détectés
+-  **Test Engineer** — génère une suite de tests `pytest` complète
+-  Pipeline **asynchrone** avec suivi en temps réel (polling)
+-  Cache intelligent (Redis ou JSON local) pour éviter de retraiter un code déjà soumis
+-  Authentification par clé API
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 review_code_agent/
@@ -43,25 +43,25 @@ review_code_agent/
 
 ---
 
-## 🔄 Fonctionnement du pipeline
+##  Fonctionnement du pipeline
 
 ```
 Code soumis
     ↓
-🔍 Bug Detector     → liste des bugs détectés
+ Bug Detector     → liste des bugs détectés
     ↓
-📋 Code Reviewer    → suggestions qualité & style
+ Code Reviewer    → suggestions qualité & style
     ↓
-🛠️ Code Corrector   → code corrigé + explications
+ Code Corrector   → code corrigé + explications
     ↓
-🧪 Test Engineer    → suite de tests pytest
+ Test Engineer    → suite de tests pytest
 ```
 
 Chaque agent reçoit le contexte des agents précédents (`context=[...]` dans CrewAI) pour produire un résultat cohérent.
 
 ---
 
-## 🚀 Démarrage rapide
+##  Démarrage rapide
 
 ### Prérequis
 - Python 3.11+
@@ -93,8 +93,8 @@ Lance le serveur :
 ```bash
 python main.py
 ```
-✅ API disponible sur `http://localhost:8000`
-✅ Documentation Swagger sur `http://localhost:8000/docs`
+ API disponible sur `http://localhost:8000`
+ Documentation Swagger sur `http://localhost:8000/docs`
 
 ### 2. Frontend
 
@@ -112,7 +112,7 @@ Lance l'interface :
 ```bash
 npm run dev
 ```
-✅ Interface disponible sur `http://localhost:5173`
+ Interface disponible sur `http://localhost:5173`
 
 ### 3. Avec Docker (recommandé pour la production)
 
@@ -149,7 +149,7 @@ curl -X POST http://localhost:8000/review/async \
 
 ---
 
-## 🛠️ Stack technique
+##  Stack technique
 
 | Couche | Technologies |
 |---|---|
@@ -163,7 +163,7 @@ curl -X POST http://localhost:8000/review/async \
 
 ---
 
-## 🔐 Sécurité
+## Sécurité
 
 - Authentification par clé API (`X-API-Key`) sur tous les endpoints sensibles
 - CORS configuré par variable d'environnement
@@ -172,7 +172,7 @@ curl -X POST http://localhost:8000/review/async \
 
 ---
 
-## 📈 Pistes d'amélioration
+##  Pistes d'amélioration
 
 - [ ] Stocker les jobs asynchrones dans Redis plutôt qu'en mémoire (perdu au redémarrage)
 - [ ] Ajouter un système de rate limiting (`slowapi`)
@@ -182,6 +182,6 @@ curl -X POST http://localhost:8000/review/async \
 
 ---
 
-## 📝 Licence
+## Licence
 
 Projet personnel — usage libre.
